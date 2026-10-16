@@ -3,7 +3,7 @@ interface ProductImage {
   alt: string;
 }
 
-interface Review {
+export interface Review {
   id: string;
   username: string;
   rating: number;

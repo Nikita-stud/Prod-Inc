@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import { indexRoute } from '../routes';
 import ProductContainer from '../components/product/ProductContainer';
@@ -10,6 +10,7 @@ const HomePage = () => {
   const { query, page } = indexRoute.useSearch();
   const router = useRouter();
   const [localQuery, setLocalQuery] = useState(query || '');
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const filteredProducts = useMemo(
     () =>
@@ -34,6 +35,7 @@ const HomePage = () => {
     router.navigate({ to: '/', search: { query, page: newPage } });
   };
   const clearSearch = () => {
+    clearTimeout(searchTimer.current);
     router.navigate({ to: '/', search: { query: '', page: 1 } });
     setLocalQuery('');
   };
@@ -55,10 +57,13 @@ const HomePage = () => {
             value={localQuery}
             onChange={(e) => {
               setLocalQuery(e.target.value);
-              router.navigate({
-                to: '/',
-                search: { query: e.target.value, page: 1 },
-              });
+              clearTimeout(searchTimer.current);
+              searchTimer.current = setTimeout(() => {
+                router.navigate({
+                  to: '/',
+                  search: { query: e.target.value, page: 1 },
+                });
+              }, 300);
             }}
             placeholder="Search for product..."
             className="form-control border rounded"

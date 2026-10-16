@@ -3,6 +3,7 @@ import type { Product } from '../types/index';
 import { productDetailsRoute } from '../routes.tsx';
 import { useCartStore } from '../store/cartStore.ts';
 import ToastContainer from '../components/ui/ToastContainer';
+import ProductReviews from '../components/product/ProductReviews';
 
 const hasDiscount = (product: Product) =>
   product.discountedPrice < product.price;
@@ -112,6 +113,8 @@ const ProductDetailPage = () => {
             </button>
           </div>
         </div>
+
+        <ProductReviews reviews={product.reviews} />
 
         {toastItem && (
           <ToastContainer item={toastItem} onClose={() => setToastItem(null)} />
